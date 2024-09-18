@@ -4,15 +4,16 @@ import bubbleSort from "../../../algorithms/bubble-sort/bubble-sort";
 import { getRandomNumberArray } from "../../../algorithms/utils/get-random-number-array";
 
 export const MainThreadDemo = ({ defaultValue = 5 }) => {
-  const [nextValue, setNextValue] = React.useState<number | null>(null);
-  const [value, setValue] = React.useState<number | null>(null);
-  const [result, setResult] = React.useState<number[]>([]);
+  const [nextArraySize, setNextArraySize] = React.useState<number>(defaultValue);
+  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(null);
+  const [sortedResult, setSortedResult] = React.useState<number[]>([]);
 
-  React.useEffect(() => {
-    if (value !== null) {
-      setResult(bubbleSort(getRandomNumberArray(value)));
+  const sort = (arraySize: number) => {
+    if (arraySize) {
+      setSortedResult([]);
+      setSortedResult(bubbleSort(getRandomNumberArray(arraySize)));
     }
-  }, [value]);
+  };
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
@@ -24,29 +25,28 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
           htmlFor="main-thread-demo-input"
           className="text-1xl text-blue-200"
         >
-          Change value and click 'Sort':
+          Change size of array and click 'Sort':
         </label>
         <input
           id="main-thread-demo-input"
           className="form-input rounded-xl text-blue-800 mb-2"
           type="number"
-          value={nextValue ?? defaultValue}
-          onChange={(e) => setNextValue(parseInt(e.target.value))}
+          value={nextArraySize}
+          onChange={(e) => setNextArraySize(parseInt(e.target.value))}
         />
         <Button
-          onClick={() => nextValue && setValue(nextValue)}
+          onClick={() => { setCurrentArraySize(nextArraySize); sort(nextArraySize); }}
           title="Sort"
-          disabled={value !== null && value !== result?.length}
         >
-          {(value &&
-            value !== result?.length &&
-            `Sorting random ${value} numbers...`) ||
+          {(currentArraySize &&
+            currentArraySize !== sortedResult?.length &&
+            `Sorting random ${currentArraySize} numbers...`) ||
             "Sort"}
         </Button>
-        {value && result && (
+        {sortedResult && (
           <p className="text-1xl text-blue-200">
-            Done sorting {result.length} numbers:{" "}
-            {result.length > 0 ? `${result.slice(0, 5).join(", ")}...` : "none"}
+            Done sorting {sortedResult.length} numbers:{" "}
+            {sortedResult.length > 0 ? `${sortedResult.slice(0, 5).join(", ")}...` : ""}
           </p>
         )}
       </div>

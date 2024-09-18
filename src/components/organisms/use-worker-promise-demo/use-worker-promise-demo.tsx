@@ -13,10 +13,10 @@ const workerLoader = createWorkerFactory<
 );
 
 export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
-  const [nextValue, setNextValue] = React.useState<number | null>(null);
-  const [value, setValue] = React.useState<number | null>(null);
+  const [nextArraySize, setNextArraySize] = React.useState<number>(defaultValue);
+  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(null);
 
-  const workerResult = useWorkerMemo(workerLoader, value ?? 0);
+  const workerResult = useWorkerMemo(workerLoader, currentArraySize ?? 0);
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
@@ -28,31 +28,31 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
           htmlFor="use-worker-promise-demo-input"
           className="text-1xl text-blue-200"
         >
-          Change value and click 'Sort':
+          Change size of array and click 'Sort':
         </label>
         <input
           id="use-worker-promise-demo-input"
           className="form-input rounded-xl text-blue-800 mb-2"
           type="number"
-          value={nextValue ?? defaultValue}
-          onChange={(e) => setNextValue(parseInt(e.target.value))}
+          value={nextArraySize}
+          onChange={(e) => setNextArraySize(parseInt(e.target.value))}
         />
         <Button
-          onClick={() => nextValue && setValue(nextValue)}
-          title="Sort"
-          disabled={!!value && value !== workerResult?.length}
+          onClick={() => nextArraySize && setCurrentArraySize(nextArraySize)}
+          title={currentArraySize === nextArraySize ? 'Due to memoization, the worker will not run again until you change the value' : 'Sort'}
+          disabled={currentArraySize === nextArraySize}
         >
-          {(!!value &&
-            value !== workerResult?.length &&
-            `Worker is sorting random ${value} numbers...`) ||
+          {(!!currentArraySize &&
+            currentArraySize !== workerResult?.length &&
+            `Worker is sorting random ${currentArraySize} numbers...`) ||
             "Sort"}
         </Button>
-        {value && workerResult && (
+        {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
-            Worker is done sorting {workerResult.length} numbers:{" "}
+            Worker is {currentArraySize !== workerResult.length ? 'now' : 'done'} sorting {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
               ? `${workerResult.slice(0, 5).join(", ")}...`
-              : "none"}
+              : ""}
           </p>
         )}
       </div>
