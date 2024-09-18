@@ -32,7 +32,7 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
         </label>
         <input
           id="use-worker-promise-demo-input"
-          className="mb-2"
+          className="form-input rounded-xl text-blue-800 mb-2"
           type="number"
           value={nextValue ?? defaultValue}
           onChange={(e) => setNextValue(parseInt(e.target.value))}
