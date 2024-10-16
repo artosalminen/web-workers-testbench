@@ -4,6 +4,7 @@ import CopyButton from "components/molecules/copy-button";
 import Clock from "components/organisms/clock";
 import UseWorkerPromiseDemo from "components/organisms/use-worker-promise-demo";
 import MainThreadDemo from "components/organisms/main-thread-demo";
+import ParallelDemo from "components/organisms/parallel-demo/parallel-demo";
 
 const technologies: { name: string; href: string }[] = [
   {
@@ -59,6 +60,7 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <MainThreadDemo defaultValue={42000} />
           <UseWorkerPromiseDemo defaultValue={42000} />
+          <ParallelDemo defaultValue={42000} chunkSize={1000} />
         </div>
       </section>
       <section className="max-w-screen-lg xl:max-w-screen-xl mx-auto">
