@@ -113,9 +113,9 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
         </Button>
         {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
-            Worker is {currentArraySize !== workerResult.length ? 'now' : 'done'} sorting {workerResult.length || currentArraySize} numbers:{" "}
+            Main thread is {currentArraySize !== workerResult.length ? 'now' : 'done'} sorting {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
-              ? `${workerResult.slice(0, 5).join(", ")}...`
+              ? `${workerResult.slice(0, 5).join(", ")}...${workerResult.slice(-5).join(", ")}`
               : ""}
           </p>
         )}
