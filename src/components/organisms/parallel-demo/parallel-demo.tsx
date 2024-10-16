@@ -24,7 +24,10 @@ const merge = (left: number[], right: number[]): number[] => {
 };
 
 // Main parallel bubble sort function with chunking
-const parallelBubbleSort = async (arr: number[], chunkSize: number): Promise<number[]> => {
+const parallelBubbleSort = async (
+  arr: number[],
+  chunkSize: number
+): Promise<number[]> => {
   const n = arr.length;
   const chunks: number[][] = [];
 
@@ -34,9 +37,11 @@ const parallelBubbleSort = async (arr: number[], chunkSize: number): Promise<num
   }
 
   // Sort chunks in parallel
-  const sortedChunks = await Promise.all(chunks.map(chunk => {
-    return Promise.resolve(bubbleSort(chunk));
-  }));
+  const sortedChunks = await Promise.all(
+    chunks.map((chunk) => {
+      return Promise.resolve(bubbleSort(chunk));
+    })
+  );
 
   // Merge sorted chunks together
   let sortedArray = sortedChunks[0];
@@ -48,26 +53,36 @@ const parallelBubbleSort = async (arr: number[], chunkSize: number): Promise<num
 };
 
 export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
-  const [nextArraySize, setNextArraySize] = React.useState<number>(defaultValue);
+  const [nextArraySize, setNextArraySize] =
+    React.useState<number>(defaultValue);
   const [nextChunkSize, setNextChunkSize] = React.useState<number>(chunkSize);
-  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(null);
-  const [currentChunkSize, setCurrentChunkSize] = React.useState<number | null>(null);
+  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
+    null
+  );
+  const [currentChunkSize, setCurrentChunkSize] = React.useState<number | null>(
+    null
+  );
   const [workerResult, setWorkerResult] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     const numbersToSort = getRandomNumberArray(currentArraySize ?? 0);
-    let active = true
-    load()
-    return () => { active = false }
+    let active = true;
+    load();
+    return () => {
+      active = false;
+    };
 
     async function load() {
-      const res = await parallelBubbleSort(numbersToSort, currentChunkSize ?? 2)
-      if (!active) { return }
-      setWorkerResult(res)
+      const res = await parallelBubbleSort(
+        numbersToSort,
+        currentChunkSize ?? 2
+      );
+      if (!active) {
+        return;
+      }
+      setWorkerResult(res);
     }
   }, [currentArraySize, currentChunkSize]);
-
-  // const workerResult = useWorkerMemo(workerLoader, currentArraySize ?? 5, currentChunkSize ?? 2);
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
@@ -102,9 +117,22 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
           onChange={(e) => setNextChunkSize(parseInt(e.target.value))}
         />
         <Button
-          onClick={() => (nextArraySize && nextChunkSize) && setCurrentArraySize(nextArraySize) || setCurrentChunkSize(nextChunkSize)}
-          title={currentArraySize === nextArraySize ? 'Due to memoization, the worker will not run again until you change the value' : 'Sort'}
-          disabled={currentArraySize === nextArraySize && currentChunkSize === nextChunkSize}
+          onClick={() =>
+            (nextArraySize &&
+              nextChunkSize &&
+              setCurrentArraySize(nextArraySize)) ||
+            setCurrentChunkSize(nextChunkSize)
+          }
+          title={
+            currentArraySize === nextArraySize &&
+            currentChunkSize === nextChunkSize
+              ? "Due to memoization, the worker will not run again until you change the value"
+              : "Sort"
+          }
+          disabled={
+            currentArraySize === nextArraySize &&
+            currentChunkSize === nextChunkSize
+          }
         >
           {(!!currentArraySize &&
             currentArraySize !== workerResult?.length &&
@@ -113,9 +141,13 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
         </Button>
         {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
-            Main thread is {currentArraySize !== workerResult.length ? 'now' : 'done'} sorting {workerResult.length || currentArraySize} numbers:{" "}
+            Main thread is{" "}
+            {currentArraySize !== workerResult.length ? "now" : "done"} sorting{" "}
+            {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
-              ? `${workerResult.slice(0, 5).join(", ")}...${workerResult.slice(-5).join(", ")}`
+              ? `${workerResult.slice(0, 5).join(", ")}...${workerResult
+                  .slice(-5)
+                  .join(", ")}`
               : ""}
           </p>
         )}
