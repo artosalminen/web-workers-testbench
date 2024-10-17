@@ -13,8 +13,11 @@ const workerLoader = createWorkerFactory<
 );
 
 export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
-  const [nextArraySize, setNextArraySize] = React.useState<number>(defaultValue);
-  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(null);
+  const [nextArraySize, setNextArraySize] =
+    React.useState<number>(defaultValue);
+  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
+    null
+  );
 
   const workerResult = useWorkerMemo(workerLoader, currentArraySize ?? 0);
 
@@ -39,7 +42,11 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
         />
         <Button
           onClick={() => nextArraySize && setCurrentArraySize(nextArraySize)}
-          title={currentArraySize === nextArraySize ? 'Due to memoization, the worker will not run again until you change the value' : 'Sort'}
+          title={
+            currentArraySize === nextArraySize
+              ? "Due to memoization, the worker will not run again until you change the value"
+              : "Sort"
+          }
           disabled={currentArraySize === nextArraySize}
         >
           {(!!currentArraySize &&
@@ -49,7 +56,9 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
         </Button>
         {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
-            Worker is {currentArraySize !== workerResult.length ? 'now' : 'done'} sorting {workerResult.length || currentArraySize} numbers:{" "}
+            Worker is{" "}
+            {currentArraySize !== workerResult.length ? "now" : "done"} sorting{" "}
+            {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
               ? `${workerResult.slice(0, 5).join(", ")}...`
               : ""}

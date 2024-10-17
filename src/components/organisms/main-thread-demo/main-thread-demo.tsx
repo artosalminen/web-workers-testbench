@@ -4,8 +4,11 @@ import bubbleSort from "../../../algorithms/bubble-sort/bubble-sort";
 import { getRandomNumberArray } from "../../../algorithms/utils/get-random-number-array";
 
 export const MainThreadDemo = ({ defaultValue = 5 }) => {
-  const [nextArraySize, setNextArraySize] = React.useState<number>(defaultValue);
-  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(null);
+  const [nextArraySize, setNextArraySize] =
+    React.useState<number>(defaultValue);
+  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
+    null
+  );
   const [sortedResult, setSortedResult] = React.useState<number[]>([]);
 
   const sort = (arraySize: number) => {
@@ -35,7 +38,10 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
           onChange={(e) => setNextArraySize(parseInt(e.target.value))}
         />
         <Button
-          onClick={() => { setCurrentArraySize(nextArraySize); sort(nextArraySize); }}
+          onClick={() => {
+            setCurrentArraySize(nextArraySize);
+            sort(nextArraySize);
+          }}
           title="Sort"
         >
           {(currentArraySize &&
@@ -46,7 +52,9 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         {sortedResult && (
           <p className="text-1xl text-blue-200">
             Done sorting {sortedResult.length} numbers:{" "}
-            {sortedResult.length > 0 ? `${sortedResult.slice(0, 5).join(", ")}...` : ""}
+            {sortedResult.length > 0
+              ? `${sortedResult.slice(0, 5).join(", ")}...`
+              : ""}
           </p>
         )}
       </div>

@@ -1,3 +1,3 @@
-import UseWorkerPromiseDemo from './parallel-demo'
+import ParallelDemo from './parallel-demo'
 
-export default UseWorkerPromiseDemo
+export default ParallelDemo
