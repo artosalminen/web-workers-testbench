@@ -3,20 +3,23 @@ import Button from "../../atoms/button";
 import bubbleSort from "../../../algorithms/bubble-sort/bubble-sort";
 import { getRandomNumberArray } from "../../../algorithms/utils/get-random-number-array";
 
+// Defines the props that can be passed to this component
 interface MainThreadDemoProps {
   defaultValue?: number;
 }
 
 export const MainThreadDemo: React.FC<MainThreadDemoProps> = ({ defaultValue = 5 }) => {
+  // Manages the size of the array to sort
   const [nextValue, setNextValue] = useState<number | null>(defaultValue);
   const [value, setValue] = useState<number | null>(null);
   const [result, setResult] = useState<number[]>([]);
   const [timer, setTimer] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
 
+  // Handles the sorting process
   const handleSort = () => {
     setIsSorting(true);
-    const startTime = performance.now();
+    const startTime = performance.now(); // Record the start time
 
     // Perform the sorting synchronously, blocking the main thread
     const sortedResult = bubbleSort(getRandomNumberArray(nextValue!));
