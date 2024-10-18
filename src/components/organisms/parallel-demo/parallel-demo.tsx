@@ -125,7 +125,7 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
           }
           title={
             currentArraySize === nextArraySize &&
-            currentChunkSize === nextChunkSize
+              currentChunkSize === nextChunkSize
               ? "Due to memoization, the worker will not run again until you change the value"
               : "Sort"
           }
@@ -146,8 +146,8 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
             {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
               ? `${workerResult.slice(0, 5).join(", ")}...${workerResult
-                  .slice(-5)
-                  .join(", ")}`
+                .slice(-5)
+                .join(", ")}`
               : ""}
           </p>
         )}

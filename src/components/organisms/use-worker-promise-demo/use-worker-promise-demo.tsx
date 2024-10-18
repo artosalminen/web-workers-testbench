@@ -1,10 +1,12 @@
 import { createWorkerFactory, useWorkerMemo } from "use-worker-promise";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../atoms/button";
 
-const workerLoader = createWorkerFactory<
-  typeof import("./use-worker-promise-example")["worker"]
->(
+interface UseWorkerPromiseDemoProps {
+  defaultValue?: number;
+}
+
+const workerLoader = createWorkerFactory<typeof import("./use-worker-promise-example")["worker"]>(
   () =>
     new Worker(new URL("./use-worker-promise-example.ts", import.meta.url), {
       type: "module",
@@ -12,58 +14,71 @@ const workerLoader = createWorkerFactory<
     })
 );
 
-export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
-  const [nextArraySize, setNextArraySize] =
-    React.useState<number>(defaultValue);
-  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
-    null
-  );
+export const UseWorkerPromiseDemo: React.FC<UseWorkerPromiseDemoProps> = ({ defaultValue = 5 }) => {
+  const [nextValue, setNextValue] = useState<number | null>(defaultValue);
+  const [value, setValue] = useState<number | null>(null);
+  const [timer, setTimer] = useState(0);
+  const [isSorting, setIsSorting] = useState(false);
+  const workerResult = useWorkerMemo(workerLoader, value ?? 0);
 
-  const workerResult = useWorkerMemo(workerLoader, currentArraySize ?? 0);
+  useEffect(() => {
+    let startTime: number | null = null;
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isSorting) {
+      startTime = performance.now();
+      interval = setInterval(() => {
+        const currentTime = performance.now();
+        setTimer(parseFloat(((currentTime - startTime!) / 1000).toFixed(2)));
+      }, 10);
+    } else if (interval) {
+      clearInterval(interval);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isSorting]);
+
+  useEffect(() => {
+    if (value !== null) {
+      setIsSorting(true);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    if (workerResult && isSorting) {
+      setIsSorting(false);
+    }
+  }, [workerResult]);
+
+  const handleSort = () => {
+    setValue(nextValue!);
+  };
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
       <div className="flex flex-col h-full">
-        <h4 className="text-2xl font-bold text-blue-200 pb-2">
-          use-worker-promise demo
-        </h4>
-        <label
-          htmlFor="use-worker-promise-demo-input"
-          className="text-1xl text-blue-200"
-        >
-          Change size of array and click 'Sort':
+        <h4 className="text-2xl font-bold text-blue-200 pb-2">use-worker-promise demo</h4>
+        <label htmlFor="use-worker-promise-demo-input" className="text-1xl text-blue-200">
+          Change value and click 'Sort':
         </label>
         <input
           id="use-worker-promise-demo-input"
-          className="form-input rounded-xl text-blue-800 mb-2"
+          className="mb-2"
           type="number"
-          value={nextArraySize}
-          onChange={(e) => setNextArraySize(parseInt(e.target.value))}
+          value={nextValue ?? defaultValue}
+          onChange={(e) => setNextValue(parseInt(e.target.value))}
         />
-        <Button
-          onClick={() => nextArraySize && setCurrentArraySize(nextArraySize)}
-          title={
-            currentArraySize === nextArraySize
-              ? "Due to memoization, the worker will not run again until you change the value"
-              : "Sort"
-          }
-          disabled={currentArraySize === nextArraySize}
-        >
-          {(!!currentArraySize &&
-            currentArraySize !== workerResult?.length &&
-            `Worker is sorting random ${currentArraySize} numbers...`) ||
-            "Sort"}
+        <Button onClick={handleSort} title="Sort" disabled={isSorting}>
+          {isSorting ? `Worker is sorting random ${value} numbers...` : "Sort"}
         </Button>
-        {currentArraySize && workerResult && (
+        {value && workerResult && (
           <p className="text-1xl text-blue-200">
-            Worker is{" "}
-            {currentArraySize !== workerResult.length ? "now" : "done"} sorting{" "}
-            {workerResult.length || currentArraySize} numbers:{" "}
-            {workerResult.length > 0
-              ? `${workerResult.slice(0, 5).join(", ")}...`
-              : ""}
+            Worker is done sorting {workerResult.length} numbers: {workerResult.slice(0, 5).join(", ")}...
           </p>
         )}
+        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2>
       </div>
     </div>
   );

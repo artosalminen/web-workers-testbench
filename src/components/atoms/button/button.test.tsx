@@ -1,6 +1,5 @@
 import Button from "./button";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event"; // Import userEvent instead of fireEvent
+import { render, fireEvent } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 
 describe("Button test", () => {
@@ -8,14 +7,15 @@ describe("Button test", () => {
     const onClick = vi.fn();
     const label = "This is a button";
 
-    render(<Button onClick={onClick}>{label}</Button>);
+    const { getByText, getByRole } = render(
+      <Button onClick={onClick}>{label}</Button>
+    );
 
-    const button = screen.getByRole("button");
+    const button = getByRole("button");
 
-    expect(screen.getByText(label)).toBeInTheDocument();
+    expect(getByText(label)).toBeInTheDocument();
     expect(button).toBeInTheDocument();
-
-    userEvent.click(button); // Use userEvent instead of fireEvent
+    fireEvent.click(button);
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
