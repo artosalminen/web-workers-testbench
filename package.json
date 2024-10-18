@@ -2,15 +2,15 @@
   "name": "react-web-workers-testbench",
   "version": "1.0.0",
   "description": "React WebWorkers testbench",
-  "homepage": "https://github.com/artosalminen/web-workers-testbench/blob/master/README.md",
+  "homepage": "https://github.com/SihangYu7/test-WebWorker/README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/artosalminen/web-workers-testbench.git"
+    "url": "https://github.com/SihangYu7/test-WebWorker.git"
   },
-  "author": "Arto Salminen <arto.salminen@gmail.com>",
+  "author": "Arto Salminen <arto.salminen@gmail.com>, Sihang Yu <sefton4eva@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/artosalminen/web-workers-testbench/issues"
+    "url": "https://github.com/SihangYu7/test-WebWorker/issues"
   },
   "keywords": [
     "react",
@@ -38,38 +38,38 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "@heroicons/react": "2.1.5",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "@heroicons/react": "2.0.18",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "use-worker-promise": "^2.2.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.5.0",
-    "@commitlint/config-conventional": "19.5.0",
-    "@tailwindcss/forms": "0.5.9",
+    "@commitlint/cli": "17.4.2",
+    "@commitlint/config-conventional": "17.4.2",
+    "@tailwindcss/forms": "0.5.3",
     "@testing-library/jest-dom": "^6.1.3",
-    "@testing-library/react": "16.0.1",
-    "@types/node": "22.7.6",
+    "@testing-library/react": "13.4.0",
+    "@types/node": "20.6.5",
     "@types/react": "^18.2.18",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^8.9.0",
-    "@typescript-eslint/parser": "^8.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
     "@vitejs/plugin-react": "^4.0.4",
-    "autoprefixer": "10.4.20",
-    "eslint": "^9.12.0",
-    "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-react": "7.37.1",
-    "eslint-plugin-react-hooks": "^5.0.0",
+    "autoprefixer": "10.4.13",
+    "eslint": "^8.46.0",
+    "eslint-plugin-import": "2.27.4",
+    "eslint-plugin-react": "7.32.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "happy-dom": "^15.7.4",
-    "husky": "9.1.6",
-    "lint-staged": "15.2.10",
-    "postcss": "8.4.47",
-    "prettier": "3.3.3",
-    "tailwindcss": "3.4.14",
+    "happy-dom": "^12.1.6",
+    "husky": "8.0.3",
+    "lint-staged": "13.1.0",
+    "postcss": "8.4.21",
+    "prettier": "2.8.2",
+    "tailwindcss": "3.2.4",
     "typescript": "^5.0.2",
-    "vite": "^5.4.9",
+    "vite": "^4.4.8",
     "vite-preset-react": "2.3.0",
-    "vitest": "^2.1.3"
+    "vitest": "^0.34.5"
   }
 }
