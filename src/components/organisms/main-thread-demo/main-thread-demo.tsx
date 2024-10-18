@@ -15,31 +15,44 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
   const [timer, setTimer] = useState(0);  // Added timer state
   const [isSorting, setIsSorting] = useState(false);  // Added isSorting state
 
+  // useEffect to clear the timer when sorting is done
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isSorting) {
+      const startTime = performance.now();
+      interval = setInterval(() => {
+        const currentTime = performance.now();
+        setTimer(parseFloat(((currentTime - startTime) / 1000).toFixed(2)));  // Update timer every 100ms
+      }, 100);
+    }
+    return () => {
+      if (interval) clearInterval(interval);  // Clear interval on component unmount
+    };
+  }, [isSorting]);
+
   // Function to handle the sorting process
   const sort = (arraySize: number) => {
     if (arraySize) {
-      setIsSorting(true);  // Set sorting status to true
+      setIsSorting(true);  // Start sorting
       setSortedResult([]);
 
-      // Timer logic
-      const startTime = performance.now();  // Start measuring time
-      const sorted = bubbleSort(getRandomNumberArray(arraySize));
-      const endTime = performance.now();  // Stop measuring time
+      // Simulate sorting process and measure time
+      const startTime = performance.now();  // Start timing
+      const sorted = bubbleSort(getRandomNumberArray(arraySize));  // Perform the sort
+      const endTime = performance.now();  // End timing
 
-      const elapsedTime = parseFloat(((endTime - startTime) / 1000).toFixed(2));  // Calculate elapsed time
-      setTimer(elapsedTime);  // Set the timer
-
-      setSortedResult(sorted);
-      setIsSorting(false);  // Set sorting status to false
+      // Stop the timer and store result
+      const elapsedTime = parseFloat(((endTime - startTime) / 1000).toFixed(2));
+      setTimer(elapsedTime);  // Set final time in seconds
+      setSortedResult(sorted);  // Set sorted results
+      setIsSorting(false);  // End sorting
     }
   };
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
       <div className="flex flex-col h-full">
-        <h4 className="text-2xl font-bold text-blue-200 pb-2">
-          Main thread demo
-        </h4>
+        <h4 className="text-2xl font-bold text-blue-200 pb-2">Main thread demo</h4>
         <label htmlFor="main-thread-demo-input" className="text-1xl text-blue-200">
           Change size of array and click 'Sort':
         </label>
@@ -53,10 +66,10 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         <Button
           onClick={() => {
             setCurrentArraySize(nextArraySize);
-            sort(nextArraySize);
+            sort(nextArraySize);  // Trigger sorting and timer
           }}
           title="Sort"
-          disabled={isSorting}  // <-- Disable button when sorting
+          disabled={isSorting}  // Disable button while sorting
         >
           {(currentArraySize && currentArraySize !== sortedResult?.length && `Sorting random ${currentArraySize} numbers...`) || "Sort"}
         </Button>
@@ -67,8 +80,8 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
           </p>
         )}
 
-        {/* New timer display */}
-        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2>  {/* <-- Added timer display */}
+        {/* Timer display */}
+        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2>  {/* <-- Display elapsed time */}
       </div>
     </div>
   );
