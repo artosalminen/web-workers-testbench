@@ -3,6 +3,10 @@ import Button from "../../atoms/button";
 import bubbleSort from "../../../algorithms/bubble-sort/bubble-sort";
 import { getRandomNumberArray } from "../../../algorithms/utils/get-random-number-array";
 
+interface MainThreadDemoProps {
+  defaultValue?: number;
+}
+
 export const MainThreadDemo = ({ defaultValue = 5 }) => {
   const [nextArraySize, setNextArraySize] =
     React.useState<number>(defaultValue);
@@ -66,10 +70,10 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         <Button
           onClick={() => {
             setCurrentArraySize(nextArraySize);
-            sort(nextArraySize);  // Trigger sorting and timer
+            sort(nextArraySize); // Trigger sorting and timer
           }}
           title="Sort"
-          disabled={isSorting}  // Disable button while sorting
+          disabled={isSorting} // Disable button while sorting
         >
           {(currentArraySize && currentArraySize !== sortedResult?.length && `Sorting random ${currentArraySize} numbers...`) || "Sort"}
         </Button>
@@ -81,7 +85,7 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         )}
 
         {/* Timer display */}
-        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2>  {/* <-- Display elapsed time */}
+        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2> {/* <-- Display elapsed time */}
       </div>
     </div>
   );
