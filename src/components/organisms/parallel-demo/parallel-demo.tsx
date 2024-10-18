@@ -27,7 +27,7 @@ const merge = (left: number[], right: number[]): number[] => {
 const parallelBubbleSort = async (
   arr: number[],
   chunkSize: number
-): Promise<number[]> => {
+): Promise<{ sorted: number[], timeElapsed: number }> => {
   const n = arr.length;
   const chunks: number[][] = [];
 
@@ -37,19 +37,24 @@ const parallelBubbleSort = async (
   }
 
   // Sort chunks in parallel
-  const sortedChunks = await Promise.all(
+  const sortResults = await Promise.all(
     chunks.map((chunk) => {
       return Promise.resolve(bubbleSort(chunk));
     })
   );
 
   // Merge sorted chunks together
-  let sortedArray = sortedChunks[0];
-  for (let i = 1; i < sortedChunks.length; i++) {
-    sortedArray = merge(sortedArray, sortedChunks[i]);
+  let totalElapsedTime = sortResults[0].timeElapsed;
+  let sortedArray = sortResults[0].sorted;
+  for (let i = 1; i < sortResults.length; i++) {
+    sortedArray = merge(sortedArray, sortResults[i].sorted);
+    totalElapsedTime += sortResults[i].timeElapsed;
   }
 
-  return sortedArray;
+  return {
+    sorted: sortedArray,
+    timeElapsed: totalElapsedTime,
+  };
 };
 
 export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
@@ -81,17 +86,8 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
       if (!active) {
         return;
       }
-      setWorkerResult(res);
-      performance.mark("main-thread-sort-end");
-      setTimeElapsed(
-        Math.floor(
-          performance.measure(
-            "sort",
-            "main-thread-sort-start",
-            "main-thread-sort-end"
-          ).duration
-        )
-      );
+      setWorkerResult(res.sorted);
+      setTimeElapsed(res.timeElapsed);
     }
   }, [currentArraySize, currentChunkSize]);
 

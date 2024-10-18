@@ -15,9 +15,9 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
   const sort = (arraySize: number) => {
     if (arraySize) {
       setSortedResult([]);
-      setSortedResult(bubbleSort(getRandomNumberArray(arraySize)));
-      performance.mark("main-thread-sort-end");
-      setTimeElapsed(Math.floor(performance.measure("sort", "main-thread-sort-start", "main-thread-sort-end").duration));
+      const { sorted, timeElapsed } = bubbleSort(getRandomNumberArray(arraySize))
+      setSortedResult(sorted);
+      setTimeElapsed(timeElapsed);
     }
   };
 
@@ -43,7 +43,6 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         <Button
           onClick={() => {
             setCurrentArraySize(nextArraySize);
-            performance.mark("main-thread-sort-start");
             sort(nextArraySize);
           }}
           title="Sort"

@@ -55,17 +55,17 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
           disabled={currentArraySize === nextArraySize}
         >
           {(!!currentArraySize &&
-            currentArraySize !== workerResult?.result.length &&
+            currentArraySize !== workerResult?.sorted.length &&
             `Worker is sorting random ${currentArraySize} numbers...`) ||
             "Sort"}
         </Button>
         {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
             Worker is{" "}
-            {currentArraySize !== workerResult.result.length ? "now" : "done"} sorting{" "}
-            {workerResult.result.length || currentArraySize} numbers:{" "}
-            {workerResult.result.length > 0
-              ? `${workerResult.result.slice(0, 5).join(", ")}...${workerResult.result
+            {currentArraySize !== workerResult.sorted.length ? "now" : "done"} sorting{" "}
+            {workerResult.sorted.length || currentArraySize} numbers:{" "}
+            {workerResult.sorted.length > 0
+              ? `${workerResult.sorted.slice(0, 5).join(", ")}...${workerResult.sorted
                 .slice(-5)
                 .join(", ")}`
               : ""}
