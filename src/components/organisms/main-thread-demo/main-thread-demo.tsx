@@ -40,10 +40,7 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         <h4 className="text-2xl font-bold text-blue-200 pb-2">
           Main thread demo
         </h4>
-        <label
-          htmlFor="main-thread-demo-input"
-          className="text-1xl text-blue-200"
-        >
+        <label htmlFor="main-thread-demo-input" className="text-1xl text-blue-200">
           Change size of array and click 'Sort':
         </label>
         <input
@@ -59,20 +56,19 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
             sort(nextArraySize);
           }}
           title="Sort"
+          disabled={isSorting}  // <-- Disable button when sorting
         >
-          {(currentArraySize &&
-            currentArraySize !== sortedResult?.length &&
-            `Sorting random ${currentArraySize} numbers...`) ||
-            "Sort"}
+          {(currentArraySize && currentArraySize !== sortedResult?.length && `Sorting random ${currentArraySize} numbers...`) || "Sort"}
         </Button>
         {sortedResult && (
           <p className="text-1xl text-blue-200">
             Done sorting {sortedResult.length} numbers:{" "}
-            {sortedResult.length > 0
-              ? `${sortedResult.slice(0, 5).join(", ")}...`
-              : ""}
+            {sortedResult.length > 0 ? `${sortedResult.slice(0, 5).join(", ")}...` : ""}
           </p>
         )}
+
+        {/* New timer display */}
+        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2>  {/* <-- Added timer display */}
       </div>
     </div>
   );
