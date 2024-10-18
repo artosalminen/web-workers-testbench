@@ -3,10 +3,6 @@ import Button from "../../atoms/button";
 import bubbleSort from "../../../algorithms/bubble-sort/bubble-sort";
 import { getRandomNumberArray } from "../../../algorithms/utils/get-random-number-array";
 
-interface MainThreadDemoProps {
-  defaultValue?: number;
-}
-
 export const MainThreadDemo = ({ defaultValue = 5 }) => {
   const [nextArraySize, setNextArraySize] =
     React.useState<number>(defaultValue);
