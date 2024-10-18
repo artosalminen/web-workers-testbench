@@ -63,6 +63,7 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
     null
   );
   const [workerResult, setWorkerResult] = React.useState<number[]>([]);
+  const [timeElapsed, setTimeElapsed] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     const numbersToSort = getRandomNumberArray(currentArraySize ?? 0);
@@ -81,6 +82,16 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
         return;
       }
       setWorkerResult(res);
+      performance.mark("main-thread-sort-end");
+      setTimeElapsed(
+        Math.floor(
+          performance.measure(
+            "sort",
+            "main-thread-sort-start",
+            "main-thread-sort-end"
+          ).duration
+        )
+      );
     }
   }, [currentArraySize, currentChunkSize]);
 
@@ -117,15 +128,16 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
           onChange={(e) => setNextChunkSize(parseInt(e.target.value))}
         />
         <Button
-          onClick={() =>
-            (nextArraySize &&
-              nextChunkSize &&
-              setCurrentArraySize(nextArraySize)) ||
-            setCurrentChunkSize(nextChunkSize)
-          }
+          onClick={() => {
+            if (nextArraySize && nextChunkSize) {
+              setCurrentArraySize(nextArraySize);
+              setCurrentChunkSize(nextChunkSize);
+              performance.mark("main-thread-sort-start");
+            }
+          }}
           title={
             currentArraySize === nextArraySize &&
-            currentChunkSize === nextChunkSize
+              currentChunkSize === nextChunkSize
               ? "Due to memoization, the worker will not run again until you change the value"
               : "Sort"
           }
@@ -146,11 +158,14 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
             {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
               ? `${workerResult.slice(0, 5).join(", ")}...${workerResult
-                  .slice(-5)
-                  .join(", ")}`
+                .slice(-5)
+                .join(", ")}`
               : ""}
           </p>
         )}
+        {
+          timeElapsed && <p className="text-1xl text-blue-200">Time elapsed: {timeElapsed}ms</p>
+        }
       </div>
     </div>
   );

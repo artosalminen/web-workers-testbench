@@ -41,7 +41,12 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
           onChange={(e) => setNextArraySize(parseInt(e.target.value))}
         />
         <Button
-          onClick={() => nextArraySize && setCurrentArraySize(nextArraySize)}
+          onClick={() => {
+            if (nextArraySize) {
+              setCurrentArraySize(nextArraySize)
+              performance.mark("worker-promise-sort-start");
+            }
+          }}
           title={
             currentArraySize === nextArraySize
               ? "Due to memoization, the worker will not run again until you change the value"
@@ -50,20 +55,25 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
           disabled={currentArraySize === nextArraySize}
         >
           {(!!currentArraySize &&
-            currentArraySize !== workerResult?.length &&
+            currentArraySize !== workerResult?.result.length &&
             `Worker is sorting random ${currentArraySize} numbers...`) ||
             "Sort"}
         </Button>
         {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
             Worker is{" "}
-            {currentArraySize !== workerResult.length ? "now" : "done"} sorting{" "}
-            {workerResult.length || currentArraySize} numbers:{" "}
-            {workerResult.length > 0
-              ? `${workerResult.slice(0, 5).join(", ")}...`
+            {currentArraySize !== workerResult.result.length ? "now" : "done"} sorting{" "}
+            {workerResult.result.length || currentArraySize} numbers:{" "}
+            {workerResult.result.length > 0
+              ? `${workerResult.result.slice(0, 5).join(", ")}...${workerResult.result
+                .slice(-5)
+                .join(", ")}`
               : ""}
           </p>
         )}
+        {
+          !!workerResult?.timeElapsed && <p className="text-1xl text-blue-200">Time elapsed: {workerResult.timeElapsed}ms</p>
+        }
       </div>
     </div>
   );

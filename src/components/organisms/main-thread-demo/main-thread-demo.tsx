@@ -10,11 +10,14 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
     null
   );
   const [sortedResult, setSortedResult] = React.useState<number[]>([]);
+  const [timeElapsed, setTimeElapsed] = React.useState<number | null>(null);
 
   const sort = (arraySize: number) => {
     if (arraySize) {
       setSortedResult([]);
       setSortedResult(bubbleSort(getRandomNumberArray(arraySize)));
+      performance.mark("main-thread-sort-end");
+      setTimeElapsed(Math.floor(performance.measure("sort", "main-thread-sort-start", "main-thread-sort-end").duration));
     }
   };
 
@@ -40,6 +43,7 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
         <Button
           onClick={() => {
             setCurrentArraySize(nextArraySize);
+            performance.mark("main-thread-sort-start");
             sort(nextArraySize);
           }}
           title="Sort"
@@ -49,14 +53,19 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
             `Sorting random ${currentArraySize} numbers...`) ||
             "Sort"}
         </Button>
-        {sortedResult && (
+        {sortedResult && sortedResult.length > 0 && (
           <p className="text-1xl text-blue-200">
             Done sorting {sortedResult.length} numbers:{" "}
             {sortedResult.length > 0
-              ? `${sortedResult.slice(0, 5).join(", ")}...`
+              ? `${sortedResult.slice(0, 5).join(", ")}...${sortedResult
+                .slice(-5)
+                .join(", ")}`
               : ""}
           </p>
         )}
+        {
+          timeElapsed && <p className="text-1xl text-blue-200">Time elapsed: {timeElapsed}ms</p>
+        }
       </div>
     </div>
   );
