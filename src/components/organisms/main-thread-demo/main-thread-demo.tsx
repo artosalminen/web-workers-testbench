@@ -1,62 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../atoms/button";
 import bubbleSort from "../../../algorithms/bubble-sort/bubble-sort";
 import { getRandomNumberArray } from "../../../algorithms/utils/get-random-number-array";
 
-export const MainThreadDemo = ({ defaultValue = 5 }) => {
-  const [nextArraySize, setNextArraySize] =
-    React.useState<number>(defaultValue);
-  const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
-    null
-  );
-  const [sortedResult, setSortedResult] = React.useState<number[]>([]);
+// Defines the props that can be passed to this component
+interface MainThreadDemoProps {
+  defaultValue?: number;
+}
 
-  const sort = (arraySize: number) => {
-    if (arraySize) {
-      setSortedResult([]);
-      setSortedResult(bubbleSort(getRandomNumberArray(arraySize)));
-    }
+export const MainThreadDemo: React.FC<MainThreadDemoProps> = ({ defaultValue = 5 }) => {
+  // Manages the size of the array to sort
+  const [nextValue, setNextValue] = useState<number | null>(defaultValue);
+  const [value, setValue] = useState<number | null>(null);
+  const [result, setResult] = useState<number[]>([]);
+  const [timer, setTimer] = useState(0);
+  const [isSorting, setIsSorting] = useState(false);
+
+  // Handles the sorting process
+  const handleSort = () => {
+    setIsSorting(true);
+    const startTime = performance.now(); // Record the start time
+
+    // Perform the sorting synchronously, blocking the main thread
+    const sortedResult = bubbleSort(getRandomNumberArray(nextValue!));
+
+    const endTime = performance.now();
+    const elapsedTime = parseFloat(((endTime - startTime) / 1000).toFixed(2));
+    setTimer(elapsedTime);
+
+    setResult(sortedResult);
+    setValue(nextValue!);
+    setIsSorting(false);
   };
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
       <div className="flex flex-col h-full">
-        <h4 className="text-2xl font-bold text-blue-200 pb-2">
-          Main thread demo
-        </h4>
-        <label
-          htmlFor="main-thread-demo-input"
-          className="text-1xl text-blue-200"
-        >
-          Change size of array and click 'Sort':
+        <h4 className="text-2xl font-bold text-blue-200 pb-2">Main thread demo</h4>
+        <label htmlFor="main-thread-demo-input" className="text-1xl text-blue-200">
+          Change value and click 'Sort':
         </label>
         <input
           id="main-thread-demo-input"
-          className="form-input rounded-xl text-blue-800 mb-2"
+          className="mb-2"
           type="number"
-          value={nextArraySize}
-          onChange={(e) => setNextArraySize(parseInt(e.target.value))}
+          value={nextValue ?? defaultValue}
+          onChange={(e) => setNextValue(parseInt(e.target.value))}
         />
-        <Button
-          onClick={() => {
-            setCurrentArraySize(nextArraySize);
-            sort(nextArraySize);
-          }}
-          title="Sort"
-        >
-          {(currentArraySize &&
-            currentArraySize !== sortedResult?.length &&
-            `Sorting random ${currentArraySize} numbers...`) ||
-            "Sort"}
+        <Button onClick={handleSort} title="Sort" disabled={isSorting}>
+          {isSorting ? `Sorting random ${nextValue} numbers...` : "Sort"}
         </Button>
-        {sortedResult && (
+        {value && result && (
           <p className="text-1xl text-blue-200">
-            Done sorting {sortedResult.length} numbers:{" "}
-            {sortedResult.length > 0
-              ? `${sortedResult.slice(0, 5).join(", ")}...`
-              : ""}
+            Done sorting {result.length} numbers: {result.slice(0, 5).join(", ")}...
           </p>
         )}
+        <h2 className="text-lg font-bold">Time elapsed: {timer} seconds</h2>
       </div>
     </div>
   );

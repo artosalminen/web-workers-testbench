@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+# WebWorker-test
+=======
 # WebWorkers React Project
 
 ## Features
@@ -45,3 +48,4 @@ And you will see the generated file in `dist` that ready to be served.
 ### Deploy on Netlify
 
 Go to [Netlify](https://app.netlify.com/start) and select your repository, `OK` along the way, and your App will be live in a minute.
+>>>>>>> 97161b1 (feat: initial demo about web workers on main thread and with use-worker-promise hook)
