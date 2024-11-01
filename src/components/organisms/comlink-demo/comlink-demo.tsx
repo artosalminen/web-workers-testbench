@@ -1,32 +1,19 @@
-import { createWorkerFactory, useWorkerMemo } from "use-worker-promise";
 import React from "react";
 import Button from "../../atoms/button";
+import { useWorker } from "./use-worker.hook";
 
-const workerLoader = createWorkerFactory<
-  (typeof import("./use-worker-promise-example"))["worker"]
->(
-  () =>
-    new Worker(new URL("./use-worker-promise-example.ts", import.meta.url), {
-      type: "module",
-      name: "useWorkerPromiseExample",
-    }),
-);
-
-export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
+export const ComlinkDemo = ({ defaultValue = 5 }) => {
   const [nextArraySize, setNextArraySize] =
     React.useState<number>(defaultValue);
   const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
     null,
   );
-
-  const workerResult = useWorkerMemo(workerLoader, currentArraySize ?? 0);
+  const workerResult = useWorker(currentArraySize ?? 0);
 
   return (
     <div className="bg-white bg-opacity-5 rounded-md shadow p-4 relative overflow-hidden h-full">
       <div className="flex flex-col h-full">
-        <h4 className="text-2xl font-bold text-blue-200 pb-2">
-          use-worker-promise demo
-        </h4>
+        <h4 className="text-2xl font-bold text-blue-200 pb-2">Comlink</h4>
         <label
           htmlFor="use-worker-promise-demo-input"
           className="text-1xl text-blue-200"
@@ -53,19 +40,16 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
           }
           disabled={currentArraySize === nextArraySize}
         >
-          {(!!currentArraySize &&
-            currentArraySize !== workerResult?.sorted.length &&
-            `Worker is sorting random ${currentArraySize} numbers...`) ||
-            "Sort"}
+          {workerResult.isCalculating ? "Sorting..." : "Sort"}
         </Button>
         {currentArraySize && workerResult && (
           <p className="text-1xl text-blue-200">
             Worker is{" "}
-            {currentArraySize !== workerResult.sorted.length ? "now" : "done"}{" "}
-            sorting {workerResult.sorted.length || currentArraySize} numbers:{" "}
-            {workerResult.sorted.length > 0
-              ? `${workerResult.sorted.slice(0, 5).join(", ")}...${workerResult.sorted
-                  .slice(-5)
+            {currentArraySize !== workerResult.sorted?.length ? "now" : "done"}{" "}
+            sorting {workerResult.sorted?.length ?? currentArraySize} numbers:{" "}
+            {workerResult.sorted && workerResult.sorted?.length > 0
+              ? `${workerResult.sorted?.slice(0, 5).join(", ")}...${workerResult.sorted
+                  ?.slice(-5)
                   .join(", ")}`
               : ""}
           </p>
@@ -80,4 +64,4 @@ export const UseWorkerPromiseDemo = ({ defaultValue = 5 }) => {
   );
 };
 
-export default UseWorkerPromiseDemo;
+export default ComlinkDemo;

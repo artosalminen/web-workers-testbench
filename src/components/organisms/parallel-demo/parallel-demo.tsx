@@ -26,8 +26,8 @@ const merge = (left: number[], right: number[]): number[] => {
 // Main parallel bubble sort function with chunking
 const parallelBubbleSort = async (
   arr: number[],
-  chunkSize: number
-): Promise<{ sorted: number[], timeElapsed: number }> => {
+  chunkSize: number,
+): Promise<{ sorted: number[]; timeElapsed: number | null }> => {
   const n = arr.length;
   const chunks: number[][] = [];
 
@@ -40,10 +40,16 @@ const parallelBubbleSort = async (
   const sortResults = await Promise.all(
     chunks.map((chunk) => {
       return Promise.resolve(bubbleSort(chunk));
-    })
+    }),
   );
 
   // Merge sorted chunks together
+  if (sortResults.length === 0) {
+    return {
+      sorted: [],
+      timeElapsed: null,
+    };
+  }
   let totalElapsedTime = sortResults[0].timeElapsed;
   let sortedArray = sortResults[0].sorted;
   for (let i = 1; i < sortResults.length; i++) {
@@ -62,10 +68,10 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
     React.useState<number>(defaultValue);
   const [nextChunkSize, setNextChunkSize] = React.useState<number>(chunkSize);
   const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
-    null
+    null,
   );
   const [currentChunkSize, setCurrentChunkSize] = React.useState<number | null>(
-    null
+    null,
   );
   const [workerResult, setWorkerResult] = React.useState<number[]>([]);
   const [timeElapsed, setTimeElapsed] = React.useState<number | null>(null);
@@ -81,7 +87,7 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
     async function load() {
       const res = await parallelBubbleSort(
         numbersToSort,
-        currentChunkSize ?? 2
+        currentChunkSize ?? 2,
       );
       if (!active) {
         return;
@@ -128,12 +134,11 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
             if (nextArraySize && nextChunkSize) {
               setCurrentArraySize(nextArraySize);
               setCurrentChunkSize(nextChunkSize);
-              performance.mark("main-thread-sort-start");
             }
           }}
           title={
             currentArraySize === nextArraySize &&
-              currentChunkSize === nextChunkSize
+            currentChunkSize === nextChunkSize
               ? "Due to memoization, the worker will not run again until you change the value"
               : "Sort"
           }
@@ -154,14 +159,16 @@ export const ParallelDemo = ({ defaultValue = 5, chunkSize = 100 }) => {
             {workerResult.length || currentArraySize} numbers:{" "}
             {workerResult.length > 0
               ? `${workerResult.slice(0, 5).join(", ")}...${workerResult
-                .slice(-5)
-                .join(", ")}`
+                  .slice(-5)
+                  .join(", ")}`
               : ""}
           </p>
         )}
-        {
-          timeElapsed && <p className="text-1xl text-blue-200">Time elapsed: {timeElapsed}ms</p>
-        }
+        {timeElapsed && (
+          <p className="text-1xl text-blue-200">
+            Time elapsed: {timeElapsed}ms
+          </p>
+        )}
       </div>
     </div>
   );

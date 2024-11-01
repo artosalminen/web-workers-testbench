@@ -5,6 +5,7 @@ import Clock from "components/organisms/clock";
 import UseWorkerPromiseDemo from "components/organisms/use-worker-promise-demo";
 import MainThreadDemo from "components/organisms/main-thread-demo";
 import ParallelDemo from "components/organisms/parallel-demo/parallel-demo";
+import ComlinkDemo from "components/organisms/comlink-demo";
 
 const technologies: { name: string; href: string }[] = [
   {
@@ -61,6 +62,7 @@ function App() {
           <MainThreadDemo defaultValue={42000} />
           <UseWorkerPromiseDemo defaultValue={42000} />
           <ParallelDemo defaultValue={42000} chunkSize={1000} />
+          <ComlinkDemo defaultValue={42000} />
         </div>
       </section>
       <section className="max-w-screen-lg xl:max-w-screen-xl mx-auto">
