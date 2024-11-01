@@ -8,5 +8,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   // @ts-ignore
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

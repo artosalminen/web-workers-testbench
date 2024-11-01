@@ -1,3 +1,3 @@
-import ParallelDemo from './parallel-demo'
+import ParallelDemo from "./parallel-demo";
 
-export default ParallelDemo
+export default ParallelDemo;

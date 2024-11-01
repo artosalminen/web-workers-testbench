@@ -7,7 +7,7 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
   const [nextArraySize, setNextArraySize] =
     React.useState<number>(defaultValue);
   const [currentArraySize, setCurrentArraySize] = React.useState<number | null>(
-    null
+    null,
   );
   const [sortedResult, setSortedResult] = React.useState<number[]>([]);
   const [timeElapsed, setTimeElapsed] = React.useState<number | null>(null);
@@ -15,7 +15,9 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
   const sort = (arraySize: number) => {
     if (arraySize) {
       setSortedResult([]);
-      const { sorted, timeElapsed } = bubbleSort(getRandomNumberArray(arraySize))
+      const { sorted, timeElapsed } = bubbleSort(
+        getRandomNumberArray(arraySize),
+      );
       setSortedResult(sorted);
       setTimeElapsed(timeElapsed);
     }
@@ -57,14 +59,16 @@ export const MainThreadDemo = ({ defaultValue = 5 }) => {
             Done sorting {sortedResult.length} numbers:{" "}
             {sortedResult.length > 0
               ? `${sortedResult.slice(0, 5).join(", ")}...${sortedResult
-                .slice(-5)
-                .join(", ")}`
+                  .slice(-5)
+                  .join(", ")}`
               : ""}
           </p>
         )}
-        {
-          timeElapsed && <p className="text-1xl text-blue-200">Time elapsed: {timeElapsed}ms</p>
-        }
+        {timeElapsed && (
+          <p className="text-1xl text-blue-200">
+            Time elapsed: {timeElapsed}ms
+          </p>
+        )}
       </div>
     </div>
   );
